@@ -3,9 +3,13 @@
 
 #include <iostream>
 
-int main()
+#include "Renderer.cpp"
+
+int main() 
 {
     std::cout << "Hello World!\n";
+
+    Renderer renderer(1080, 920);
 
     return 0;
 }
