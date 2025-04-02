@@ -3,13 +3,14 @@
 
 #include <iostream>
 
-#include "Renderer.cpp"
+#include "Renderer.h"
 
 int main() 
 {
     std::cout << "Hello World!\n";
 
-    Renderer renderer(1080, 920);
+    multidemo::Renderer renderer(1080, 920);
+    renderer.run();
 
     return 0;
 }
