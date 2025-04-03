@@ -6,7 +6,6 @@ struct SDL_Texture;
 
 namespace multidemo
 {
-
 	class Renderer
 	{
 	public:
@@ -27,10 +26,5 @@ namespace multidemo
 
 		SDL_Window* window;
 		SDL_Renderer* renderer;
-		SDL_Texture* texture;
-
-		// Array of integer containing the value for each pixel
-		int* frameBuffer;
 	};
-
 }
