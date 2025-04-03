@@ -1,20 +1,53 @@
 // Copyright 2025 Giorgio Gamba
 
+#include "Renderer.h"
+
+#include <iostream>
+
 #include "SDL3/SDL_init.h"
+#include "SDL3/SDL_render.h"
+#include "SDL3/SDL_timer.h"
 
-class Renderer
+namespace multidemo
 {
-public:
 
-	Renderer(const int inWidth, const int inHeight)
+	Renderer::Renderer(const int inWidth, const int inHeight)
 		: width(inWidth)
 		, height(inHeight)
 	{
 		SDL_Init(SDL_INIT_VIDEO);
-	
-		window = SDL_CreateWindow("TEST", width, height, SDL_WINDOWPOS_CENTERED | SDL_WINDOWPOS_CENTERED);
 
-	};
+		frameBuffer = new uint8_t[width * height];
+
+		window = SDL_CreateWindow("TEST", width, height, 0);
+		if (!window)
+		{
+			return;
+		}
+
+		SDL_SetWindowResizable(window, true);
+
+		renderer = SDL_CreateRenderer(window, nullptr);
+		if (!renderer)
+		{
+			return;
+		}
+	}
+
+	Renderer::~Renderer()
+	{
+		SDL_DestroyRenderer(renderer);
+		SDL_Quit();
+	}
+
+	void Renderer::run()
+	{
+		while (true)
+		{
+			render();
+		}
+	}
+
 	void Renderer::render()
 	{
 		SDL_SetRenderScale(renderer, 4, 4);
