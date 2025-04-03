@@ -17,8 +17,6 @@ namespace multidemo
 	{
 		SDL_Init(SDL_INIT_VIDEO);
 
-		frameBuffer = new uint8_t[width * height];
-
 		window = SDL_CreateWindow("TEST", width, height, 0);
 		if (!window)
 		{
