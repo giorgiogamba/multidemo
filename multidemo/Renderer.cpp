@@ -30,6 +30,12 @@ namespace multidemo
 		{
 			return;
 		}
+
+		texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, width, height);
+		if (!texture)
+		{
+			return;
+		}
 	}
 
 	Renderer::~Renderer()
@@ -42,28 +48,56 @@ namespace multidemo
 	{
 		while (true)
 		{
+			update();
 			render();
 		}
+	}
+
+	void Renderer::update()
+	{
+		void* rawPixels = nullptr;
+		int pitch = 0;
+
+		// Locks texture in order to obtaint access to pixels/
+		// The pitch is the number of bytes per pixel
+		if (SDL_LockTexture(texture, nullptr, &rawPixels, &pitch) == -1) {
+			return;
+		}
+
+		Uint32* pixels = static_cast<Uint32*>(rawPixels); // Cast to 32bit type because it assumes ARGB888 format
+
+		for (int y = 0; y < height; ++y)
+		{
+			for (int x = 0; x < width; ++x) 
+			{
+				Uint32* targetPixel = (Uint32*)((Uint8*)pixels + y * pitch + x * sizeof(Uint32));
+
+				const Uint8 red = static_cast<Uint8>(255);
+				const Uint8 green = static_cast<Uint8>(255);
+				const Uint8 blue = static_cast<Uint8>(255);
+				const Uint8 alpha = static_cast<Uint8>(255);
+
+				// Composes the pixels in format ARGB
+				*targetPixel = (alpha << 24) | (red << 16) | (green << 8) | blue;
+			}
+		}
+
+		// Unlockes texture after writing
+		SDL_UnlockTexture(texture);
 	}
 
 	void Renderer::render()
 	{
 		SDL_SetRenderScale(renderer, 4, 4);
 
+		// Clean up
 		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-
 		SDL_RenderClear(renderer);
 
-		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
+		// Draw texture over the window completely (otherwise draw a rectangle)
+		SDL_RenderTexture(renderer, texture, nullptr, nullptr);
 
-		for (float i = 0.f; i < 10.f; ++i)
-		{
-			for (float j = 0.f; j < 10.f; ++j)
-			{
-				SDL_RenderPoint(renderer, i, j);
-			}
-		}
-
+		// Show result
 		SDL_RenderPresent(renderer);
 	}
 }

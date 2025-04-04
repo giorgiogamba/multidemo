@@ -16,6 +16,7 @@ namespace multidemo
 
 		void run();
 
+		void update();
 		void render();
 
 	private:
@@ -26,5 +27,6 @@ namespace multidemo
 
 		SDL_Window* window;
 		SDL_Renderer* renderer;
+		SDL_Texture* texture;
 	};
 }
