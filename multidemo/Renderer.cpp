@@ -100,4 +100,27 @@ namespace multidemo
 		// Show result
 		SDL_RenderPresent(renderer);
 	}
+
+	void Renderer::updateTexture(Uint32* pixels, const int startingLine, const int numLines, const int width, const int value)
+	{
+		for (int y = startingLine; y < startingLine + numLines; ++y)
+		{
+			for (int x = 0; x < width; ++x)
+			{
+				const int idx = y /** pitch*/ + x * sizeof(Uint32);
+				Uint32* targetPixel = (Uint32*)&pixels[idx];
+
+				const Uint8 red = static_cast<Uint8>(value);
+				const Uint8 green = static_cast<Uint8>(value);
+				const Uint8 blue = static_cast<Uint8>(value);
+				const Uint8 alpha = static_cast<Uint8>(255);
+
+				// Composes the pixels in format ARGB
+				if (targetPixel)
+				{
+					*targetPixel = (alpha << 24) | (red << 16) | (green << 8) | blue;
+				}
+			}
+		}
+	}
 }
