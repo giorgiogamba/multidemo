@@ -56,7 +56,7 @@ namespace multidemo
 	void Renderer::update()
 	{
 		void* rawPixels = nullptr;
-		int pitch = 0;
+		
 
 		// Locks texture in order to obtaint access to pixels/
 		// The pitch is the number of bytes per pixel
