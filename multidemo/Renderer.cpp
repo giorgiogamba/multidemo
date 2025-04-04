@@ -82,7 +82,7 @@ namespace multidemo
 			}
 		}
 
-		// Unlockes texture after writing
+		// Unlocks texture after writing
 		SDL_UnlockTexture(texture);
 	}
 
