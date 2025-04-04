@@ -85,6 +85,19 @@ namespace multidemo
 		// Unlockes texture after writing
 		SDL_UnlockTexture(texture);
 	}
+
+	void Renderer::render()
+	{
+		SDL_SetRenderScale(renderer, 4, 4);
+
+		// Clean up
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+		SDL_RenderClear(renderer);
+
+		// Draw texture over the window completely (otherwise draw a rectangle)
+		SDL_RenderTexture(renderer, texture, nullptr, nullptr);
+
+		// Show result
 		SDL_RenderPresent(renderer);
 	}
 }
