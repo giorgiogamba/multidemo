@@ -3,6 +3,7 @@
 #include "Renderer.h"
 
 #include <iostream>
+#include <atomic>
 
 #include "SDL3/SDL_init.h"
 #include "SDL3/SDL_render.h"
@@ -36,6 +37,9 @@ namespace multidemo
 		{
 			return;
 		}
+
+		const int numThread = std::thread::hardware_concurrency() - 1;
+		threads.resize(numThread);
 	}
 
 	Renderer::~Renderer()
@@ -66,19 +70,21 @@ namespace multidemo
 
 		Uint32* pixels = static_cast<Uint32*>(rawPixels); // Cast to 32bit type because it assumes ARGB888 format
 
-		for (int y = 0; y < height; ++y)
+		const int numLines = height / (std::thread::hardware_concurrency() - 1);
+
+		for (int threadID = 0; threadID < threads.size()-1; ++threadID)
 		{
-			for (int x = 0; x < width; ++x) 
+			const int startingLine = threadID * numLines;
+			const int value = 20 * threadID;
+			const int inWidth = width;
+			threads[threadID] = std::thread(&Renderer::updateTexture, this, pixels, startingLine, numLines, width, value);
+		}
+
+		for (int threadID = 0; threadID < threads.size() - 1; ++threadID)
+		{
+			if (threads[threadID].joinable())
 			{
-				Uint32* targetPixel = (Uint32*)((Uint8*)pixels + y * pitch + x * sizeof(Uint32));
-
-				const Uint8 red = static_cast<Uint8>(255);
-				const Uint8 green = static_cast<Uint8>(255);
-				const Uint8 blue = static_cast<Uint8>(255);
-				const Uint8 alpha = static_cast<Uint8>(255);
-
-				// Composes the pixels in format ARGB
-				*targetPixel = (alpha << 24) | (red << 16) | (green << 8) | blue;
+				threads[threadID].join();
 			}
 		}
 

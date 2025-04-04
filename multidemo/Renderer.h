@@ -1,5 +1,10 @@
 // Copyright 2025 Giorgio Gamba
 
+#include <vector>
+#include <thread>
+#include "SDL3/SDL_stdinc.h"
+#include <mutex>
+
 struct SDL_Window;
 struct SDL_Renderer;
 struct SDL_Texture;
@@ -32,5 +37,9 @@ namespace multidemo
 		SDL_Window* window;
 		SDL_Renderer* renderer;
 		SDL_Texture* texture;
+
+		std::vector<std::thread> threads;
+
+		std::mutex pixelMutex;
 	};
 }
