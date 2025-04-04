@@ -60,7 +60,7 @@ namespace multidemo
 
 		// Locks texture in order to obtaint access to pixels/
 		// The pitch is the number of bytes per pixel
-		if (SDL_LockTexture(texture, nullptr, &rawPixels, &pitch) == -1) {
+		if (!SDL_LockTexture(texture, nullptr, &rawPixels, &pitch)) {
 			return;
 		}
 
