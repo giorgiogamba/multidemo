@@ -16,6 +16,7 @@ namespace multidemo
 
 		void run();
 
+		void update();
 		void render();
 
 	private:
