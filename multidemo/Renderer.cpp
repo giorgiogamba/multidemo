@@ -56,9 +56,9 @@ namespace multidemo
 
 		SDL_SetRenderDrawColor(renderer, 255, 255, 255, 255);
 
-		for (int i = 0; i < 10; ++i)
+		for (float i = 0.f; i < 10.f; ++i)
 		{
-			for (int j = 0; j < 10; ++j)
+			for (float j = 0.f; j < 10.f; ++j)
 			{
 				SDL_RenderPoint(renderer, i, j);
 			}
