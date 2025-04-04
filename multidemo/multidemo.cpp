@@ -5,12 +5,12 @@
 
 #include "Renderer.h"
 
-int main() 
+int main()
 {
-    std::cout << "Hello World!\n";
+    std::cout << "This application writes on window using multi-threading\n";
 
-    multidemo::Renderer renderer(1080, 920);
+    multidemo::Renderer renderer(600, 400);
     renderer.run();
 
-    return 0;
+    return EXIT_SUCCESS;
 }
