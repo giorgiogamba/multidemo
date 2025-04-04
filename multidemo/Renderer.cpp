@@ -30,6 +30,12 @@ namespace multidemo
 		{
 			return;
 		}
+
+		texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, width, height);
+		if (!texture)
+		{
+			return;
+		}
 	}
 
 	Renderer::~Renderer()
