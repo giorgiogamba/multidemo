@@ -80,21 +80,19 @@ namespace multidemo
 
 		Uint32* pixels = static_cast<Uint32*>(rawPixels); // Cast to 32bit type because it assumes ARGB888 format
 
-		const int numLines = height / (std::thread::hardware_concurrency() - 1);
+		for (int y = 0; y < height; ++y) {
 
-		for (int threadID = 0; threadID < threads.size()-1; ++threadID)
-		{
-			const int startingLine = threadID * numLines;
-			const int value = 20 * threadID;
-			const int inWidth = width;
-			threads[threadID] = std::thread(&Renderer::updateTexture, this, pixels, startingLine, numLines, width, value);
-		}
+			Uint32* row = (Uint32*)((Uint8*)pixels + y * pitch);
 
-		for (int threadID = 0; threadID < threads.size() - 1; ++threadID)
-		{
-			if (threads[threadID].joinable())
-			{
-				threads[threadID].join();
+			for (int x = 0; x < width; ++x) {
+
+				Uint8 r = (Uint8)(x * 255 / width); 
+				Uint8 g = (Uint8)(y * 255 / height);
+				Uint8 b = 128;                      
+				Uint8 a = 255;                      
+
+				Uint32 color = 0xFF0000FF;
+				row[x] = color;
 			}
 		}
 
