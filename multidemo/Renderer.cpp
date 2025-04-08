@@ -44,6 +44,7 @@ namespace multidemo
 
 	Renderer::~Renderer()
 	{
+		SDL_DestroyTexture(texture);
 		SDL_DestroyRenderer(renderer);
 		SDL_Quit();
 	}
