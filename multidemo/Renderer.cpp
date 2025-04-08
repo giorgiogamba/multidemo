@@ -51,8 +51,17 @@ namespace multidemo
 
 	void Renderer::run()
 	{
-		while (true)
+		bool bRunning = true;
+		while (bRunning)
 		{
+			SDL_Event event;
+			while (SDL_PollEvent(&event)) {
+				if (event.type == SDL_EVENT_QUIT) {
+					bRunning = false;
+					break;
+				}
+			}
+
 			update();
 			render();
 		}
