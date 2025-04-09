@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <atomic>
+#include <chrono>
 
 #include "SDL3/SDL_init.h"
 #include "SDL3/SDL_render.h"
@@ -57,6 +58,9 @@ namespace multidemo
 		bool bRunning = true;
 		while (bRunning)
 		{
+			// start timer
+			frameStartTime = std::chrono::high_resolution_clock::now();
+			
 			SDL_Event event;
 			while (SDL_PollEvent(&event)) {
 				if (event.type == SDL_EVENT_QUIT) {
@@ -67,6 +71,7 @@ namespace multidemo
 
 			update();
 			render();
+			printStatistics();
 		}
 	}
 
@@ -177,5 +182,21 @@ namespace multidemo
 
 		// Show result
 		SDL_RenderPresent(renderer);
+	}
+
+	void Renderer::printStatistics()
+	{
+		const std::chrono::high_resolution_clock::time_point frameEndTime = std::chrono::high_resolution_clock::now();
+
+		// Compute the time requested to draw the current frame
+		const std::chrono::duration<double, std::milli> frameTime = frameEndTime - frameStartTime;
+
+		// Compute fps
+		constexpr std::chrono::seconds oneSecond(1);
+		constexpr auto secondInMilli = std::chrono::duration_cast<std::chrono::milliseconds>(oneSecond);
+
+		const double framesPerSecond = secondInMilli.count() / frameTime.count();
+
+		std::cout << "Frame drawn in " << frameTime.count() << " milliseconds. FPS: " << framesPerSecond << "\n";
 	}
 }
