@@ -89,7 +89,7 @@ namespace multidemo
 			startingLine = endLine;
 		}
 
-		// make the main thread draw all the remainig lines (considers also reminders from previous threads)
+		// make the main thread draw all the remaining lines (considers also reminders from previous threads)
 		updateTexture(pixels, startingLine, height, 255, 255, 255);
 
 		// makes the main thread wait for each worker
