@@ -28,6 +28,16 @@ namespace multidemo
 
 	private:
 
+		Uint32* getTextureRawData();
+
+		void releaseTexture();
+
+		Uint32 buildColorCode(const int x, const int y);
+
+		void cleanScreen();
+
+		void renderTexture();
+
 		int width;
 
 		int height;

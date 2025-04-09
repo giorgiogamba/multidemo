@@ -69,36 +69,19 @@ namespace multidemo
 
 	void Renderer::update()
 	{
-		void* rawPixels = nullptr;
-		
-
-		// Locks texture in order to obtaint access to pixels/
-		// The pitch is the number of bytes per pixel
-		if (!SDL_LockTexture(texture, nullptr, &rawPixels, &pitch)) {
+		Uint32* pixels = getTextureRawData();
+		if (!pixels)
 			return;
-		}
-
-		Uint32* pixels = static_cast<Uint32*>(rawPixels); // Cast to 32bit type because it assumes ARGB888 format
 
 		updateTexture(pixels, 0, height, 0);
 
-		// Unlocks texture after writing
-		SDL_UnlockTexture(texture);
+		releaseTexture();
 	}
 
 	void Renderer::render()
 	{
-		SDL_SetRenderScale(renderer, 4, 4);
-
-		// Clean up
-		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
-		SDL_RenderClear(renderer);
-
-		// Draw texture over the window completely (otherwise draw a rectangle)
-		SDL_RenderTexture(renderer, texture, nullptr, nullptr);
-
-		// Show result
-		SDL_RenderPresent(renderer);
+		cleanScreen();
+		renderTexture();
 	}
 
 	void Renderer::updateTexture(Uint32* pixels, const int startLine, const int endLine, const int colorValue)
@@ -106,20 +89,65 @@ namespace multidemo
 		if (!pixels)
 			return;
 
-		for (int y = startLine; y < endLine; ++y) {
-
+		for (int y = startLine; y < endLine; ++y)
+		{
 			Uint32* row = (Uint32*)((Uint8*)pixels + y * pitch);
 
-			for (int x = 0; x < width; ++x) {
-
-				Uint8 r = (Uint8)(x * 255 / width);
-				Uint8 g = (Uint8)(y * 255 / height);
-				Uint8 b = 128;
-				Uint8 a = 255;
-
-				Uint32 color = (a << 24) | (r << 16) | (g << 8) | b;
-				row[x] = color;
+			for (int x = 0; x < width; ++x)
+			{	
+				row[x] = buildColorCode(x, y);
 			}
 		}
+	}
+
+	Uint32* Renderer::getTextureRawData()
+	{
+		// Use pointer to void because we don't know the memory typology
+		void* rawPixels = nullptr;
+
+		// Locks texture in order to obtain access to pixels/
+		// The pitch is the number of bytes per pixel
+		if (!SDL_LockTexture(texture, nullptr, &rawPixels, &pitch))
+		{
+			return nullptr;
+		}
+
+		return static_cast<Uint32*>(rawPixels); // Cast to 32bit type because it assumes ARGB888 format
+	}
+
+	void Renderer::releaseTexture()
+	{
+		// Unlocks texture after writing
+		SDL_UnlockTexture(texture);
+	}
+
+	Uint32 Renderer::buildColorCode(const int x, const int y)
+	{
+		Uint8 r = (Uint8)(x * 255 / width);
+		Uint8 g = (Uint8)(y * 255 / height);
+		Uint8 b = 128;
+		Uint8 a = 255;
+
+		Uint32 color = (a << 24) | (r << 16) | (g << 8) | b;
+		
+		return color;
+	}
+
+	void Renderer::cleanScreen()
+	{
+		SDL_SetRenderScale(renderer, 4, 4);
+
+		// Clean up
+		SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);
+		SDL_RenderClear(renderer);
+	}
+
+	void Renderer::renderTexture()
+	{
+		// Draw texture over the window completely (otherwise draw a rectangle)
+		SDL_RenderTexture(renderer, texture, nullptr, nullptr);
+
+		// Show result
+		SDL_RenderPresent(renderer);
 	}
 }
