@@ -12,6 +12,8 @@ struct Pixel;
 
 namespace multidemo
 {
+	static std::string windowTitle("multidemo");
+
 	class Renderer
 	{
 	public:
