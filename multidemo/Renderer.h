@@ -50,6 +50,5 @@ namespace multidemo
 
 		std::vector<std::thread> threads;
 
-		std::mutex pixelMutex;
 	};
 }
