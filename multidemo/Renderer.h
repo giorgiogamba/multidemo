@@ -32,8 +32,6 @@ namespace multidemo
 
 		void releaseTexture();
 
-		Uint32 buildColorCode(const int x, const int y, const int red, const int green, const int blue);
-
 		void cleanScreen();
 
 		void renderTexture();
