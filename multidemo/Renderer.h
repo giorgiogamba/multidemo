@@ -2,8 +2,9 @@
 
 #include <vector>
 #include <thread>
-#include "SDL3/SDL_stdinc.h"
 #include <mutex>
+
+#include "SDL3/SDL_stdinc.h"
 
 struct SDL_Window;
 struct SDL_Renderer;
