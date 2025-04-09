@@ -38,8 +38,11 @@ namespace multidemo
 			return;
 		}
 
-		const int numThread = std::thread::hardware_concurrency() - 1;
-		threads.resize(numThread);
+		// We don't make the main thread draw
+		const int numThreads = std::thread::hardware_concurrency() - 1;
+		threads.resize(numThreads);
+
+		std::cout << "Renderer spawned with " << numThreads + 1 << " threads\n";
 	}
 
 	Renderer::~Renderer()
