@@ -121,12 +121,14 @@ namespace multidemo
 		SDL_UnlockTexture(texture);
 	}
 
-	Uint32 Renderer::buildColorCode(const int x, const int y)
+	Uint32 Renderer::buildColorCode(const int x, const int y, const int red, const int green, const int blue)
 	{
-		Uint8 r = (Uint8)(x * 255 / width);
-		Uint8 g = (Uint8)(y * 255 / height);
-		Uint8 b = 128;
-		Uint8 a = 255;
+		constexpr int maxColorValue = 255;
+
+		const Uint8 r = (Uint8)(x * red / width);
+		const Uint8 g = (Uint8)(y * green / height);
+		const Uint8 b = blue;
+		const Uint8 a = maxColorValue;
 
 		Uint32 color = (a << 24) | (r << 16) | (g << 8) | b;
 		
