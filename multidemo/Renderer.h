@@ -24,12 +24,12 @@ namespace multidemo
 
 		void run();
 
+	private:
+
 		void update();
 		void render();
 
-		void updateTexture(Uint32* pixels, const int startLine, const int endLine, const Pixel& pixel);
-
-	private:
+		void updateTexture(Uint32* pixels, const int startLine, const int numLinesToDraw, const Pixel& pixel);
 
 		void handleInputs();
 
