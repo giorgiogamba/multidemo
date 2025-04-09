@@ -53,5 +53,8 @@ namespace multidemo
 
 		std::vector<std::thread> threads;
 
+		/** Time when the frame started to be drawn */
+		std::chrono::high_resolution_clock::time_point frameStartTime;
+
 	};
 }

@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include <atomic>
+#include <chrono>
 
 #include "SDL3/SDL_init.h"
 #include "SDL3/SDL_render.h"
@@ -57,6 +58,9 @@ namespace multidemo
 		bool bRunning = true;
 		while (bRunning)
 		{
+			// start timer
+			frameStartTime = std::chrono::high_resolution_clock::now();
+			
 			SDL_Event event;
 			while (SDL_PollEvent(&event)) {
 				if (event.type == SDL_EVENT_QUIT) {
@@ -67,6 +71,7 @@ namespace multidemo
 
 			update();
 			render();
+			printStatistics();
 		}
 	}
 
