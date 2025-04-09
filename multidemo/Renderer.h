@@ -8,6 +8,7 @@
 struct SDL_Window;
 struct SDL_Renderer;
 struct SDL_Texture;
+struct Pixel;
 
 namespace multidemo
 {
@@ -24,7 +25,7 @@ namespace multidemo
 		void update();
 		void render();
 
-		void updateTexture(Uint32* pixels, const int startLine, const int endLine, const int red, const int green, const int blue);
+		void updateTexture(Uint32* pixels, const int startLine, const int endLine, const Pixel& pixel);
 
 	private:
 

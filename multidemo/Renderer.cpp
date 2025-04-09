@@ -9,6 +9,7 @@
 #include "SDL3/SDL_init.h"
 #include "SDL3/SDL_render.h"
 #include "SDL3/SDL_timer.h"
+#include "Pixel.h"
 
 namespace multidemo
 {
@@ -88,14 +89,17 @@ namespace multidemo
 		for (int i = 0; i < threads.size(); ++i)
 		{
 			const int endLine = startingLine + linesPerThread;
+			
 			const int currentThreadColorValue = i * threadColorValue;
-			threads[i] = std::thread(&Renderer::updateTexture, this, pixels, startingLine, endLine, currentThreadColorValue, currentThreadColorValue, currentThreadColorValue);
+			Pixel pixel(currentThreadColorValue, currentThreadColorValue, currentThreadColorValue);
+			threads[i] = std::thread(&Renderer::updateTexture, this, pixels, startingLine, endLine, pixel);
 
 			startingLine = endLine;
 		}
 
 		// make the main thread draw all the remaining lines (considers also reminders from previous threads)
-		updateTexture(pixels, startingLine, height, 255, 255, 255);
+		Pixel mainThreadPixel(threadColorValue, threadColorValue, threadColorValue);
+		updateTexture(pixels, startingLine, height, mainThreadPixel);
 
 		// makes the main thread wait for each worker
 		for (int i = 0; i < threads.size(); ++i)
@@ -115,7 +119,7 @@ namespace multidemo
 		renderTexture();
 	}
 
-	void Renderer::updateTexture(Uint32* pixels, const int startLine, const int endLine, const int red, const int green, const int blue)
+	void Renderer::updateTexture(Uint32* pixels, const int startLine, const int endLine, const Pixel& pixel)
 	{
 		if (!pixels)
 			return;
@@ -126,7 +130,7 @@ namespace multidemo
 
 			for (int x = 0; x < width; ++x)
 			{	
-				row[x] = buildColorCode(x, y, red, green, blue);
+				row[x] = pixel.getColor();
 			}
 		}
 	}
