@@ -9,8 +9,15 @@ int main()
 {
     std::cout << "This application writes on window using multi-threading\n";
 
-    multidemo::Renderer renderer(600, 400);
-    renderer.run();
+    try {
+        multidemo::Renderer renderer(600, 400);
+        renderer.run();
+    }
+    catch (std::exception e)
+    {
+        std::cout << "Error while executing application: " << e.what() << std::endl;
+        return EXIT_FAILURE;
+    }
 
     return EXIT_SUCCESS;
 }
