@@ -29,6 +29,8 @@ namespace multidemo
 
 	private:
 
+		void handleInputs();
+
 		Uint32* getTextureRawData();
 
 		void releaseTexture();

@@ -61,19 +61,12 @@ namespace multidemo
 
 	void Renderer::run()
 	{
-		bool bRunning = true;
 		while (bRunning)
 		{
 			// start timer
 			frameStartTime = std::chrono::high_resolution_clock::now();
 			
-			SDL_Event event;
-			while (SDL_PollEvent(&event)) {
-				if (event.type == SDL_EVENT_QUIT) {
-					bRunning = false;
-					break;
-				}
-			}
+			handleInputs();
 
 			update();
 			render();
@@ -137,6 +130,22 @@ namespace multidemo
 			{	
 				row[x] = pixel.getColor();
 			}
+		}
+	}
+
+	void Renderer::handleInputs()
+	{
+		SDL_Event event;
+
+		while (SDL_PollEvent(&event)) {
+
+			switch (event.type)
+			{
+			case SDL_EVENT_QUIT:
+				bRunning = false;
+				break;
+			}
+
 		}
 	}
 
