@@ -23,12 +23,20 @@ namespace multidemo
 		, texture(nullptr)
 		, bRunning(true)
 	{
-		SDL_Init(SDL_INIT_VIDEO);
+		if (width <= 0 || height <= 0)
+		{
+			throw std::invalid_argument("The provided window sizes must be both positive integers");
+		}
 
-		window = SDL_CreateWindow("TEST", width, height, 0);
+		if (!SDL_Init(SDL_INIT_VIDEO))
+		{
+			throw std::exception("Error while initializing SDL");
+		}
+
+		window = SDL_CreateWindow(windowTitle.c_str(), width, height, 0);
 		if (!window)
 		{
-			return;
+			throw std::exception("error while creating window");
 		}
 
 		SDL_SetWindowResizable(window, true);
@@ -36,18 +44,23 @@ namespace multidemo
 		renderer = SDL_CreateRenderer(window, nullptr);
 		if (!renderer)
 		{
-			return;
+			throw std::exception("error while creating SDL inner renderer");
 		}
 
 		texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, width, height);
 		if (!texture)
 		{
-			return;
+			throw std::exception("error while creating texture");
 		}
 
-		// We don't make the main thread draw
-		const int numThreads = std::thread::hardware_concurrency() - 1;
+		const int numThreads = std::thread::hardware_concurrency();
+		if (numThreads <= 0)
+		{
+			throw std::exception("Error instantiating threads. They are 0");
+		}
+
 		threads.resize(numThreads);
+		std::cout << "Renderer spawned with " << numThreads << " threads\n";
 
 		std::cout << "Renderer spawned with " << numThreads + 1 << " threads\n";
 	}
