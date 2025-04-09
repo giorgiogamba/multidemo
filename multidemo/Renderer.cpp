@@ -80,21 +80,7 @@ namespace multidemo
 
 		Uint32* pixels = static_cast<Uint32*>(rawPixels); // Cast to 32bit type because it assumes ARGB888 format
 
-		for (int y = 0; y < height; ++y) {
-
-			Uint32* row = (Uint32*)((Uint8*)pixels + y * pitch);
-
-			for (int x = 0; x < width; ++x) {
-
-				Uint8 r = (Uint8)(x * 255 / width); 
-				Uint8 g = (Uint8)(y * 255 / height);
-				Uint8 b = 128;                      
-				Uint8 a = 255;                      
-
-				Uint32 color = 0xFF0000FF;
-				row[x] = color;
-			}
-		}
+		updateTexture(pixels, 0, height, 0);
 
 		// Unlocks texture after writing
 		SDL_UnlockTexture(texture);
@@ -115,25 +101,24 @@ namespace multidemo
 		SDL_RenderPresent(renderer);
 	}
 
-	void Renderer::updateTexture(Uint32* pixels, const int startingLine, const int numLines, const int width, const int value)
+	void Renderer::updateTexture(Uint32* pixels, const int startLine, const int endLine, const int colorValue)
 	{
-		for (int y = startingLine; y < startingLine + numLines; ++y)
-		{
-			for (int x = 0; x < width; ++x)
-			{
-				const int idx = y /** pitch*/ + x * sizeof(Uint32);
-				Uint32* targetPixel = (Uint32*)&pixels[idx];
+		if (!pixels)
+			return;
 
-				const Uint8 red = static_cast<Uint8>(value);
-				const Uint8 green = static_cast<Uint8>(value);
-				const Uint8 blue = static_cast<Uint8>(value);
-				const Uint8 alpha = static_cast<Uint8>(255);
+		for (int y = startLine; y < endLine; ++y) {
 
-				// Composes the pixels in format ARGB
-				if (targetPixel)
-				{
-					*targetPixel = (alpha << 24) | (red << 16) | (green << 8) | blue;
-				}
+			Uint32* row = (Uint32*)((Uint8*)pixels + y * pitch);
+
+			for (int x = 0; x < width; ++x) {
+
+				Uint8 r = (Uint8)(x * 255 / width);
+				Uint8 g = (Uint8)(y * 255 / height);
+				Uint8 b = 128;
+				Uint8 a = 255;
+
+				Uint32 color = (a << 24) | (r << 16) | (g << 8) | b;
+				row[x] = color;
 			}
 		}
 	}
