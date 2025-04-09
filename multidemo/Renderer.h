@@ -19,7 +19,6 @@ namespace multidemo
 	public:
 
 		Renderer(const int inWidth, const int inHeight);
-
 		~Renderer();
 
 		void run();
@@ -54,6 +53,7 @@ namespace multidemo
 		SDL_Texture* texture;
 
 		std::vector<std::thread> threads;
+		int linesPerThread;
 
 		/** Time when the frame started to be drawn */
 		std::chrono::high_resolution_clock::time_point frameStartTime;

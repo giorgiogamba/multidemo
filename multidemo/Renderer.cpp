@@ -13,7 +13,6 @@
 
 namespace multidemo
 {
-
 	Renderer::Renderer(const int inWidth, const int inHeight)
 		: width(inWidth)
 		, height(inHeight)
@@ -21,6 +20,7 @@ namespace multidemo
 		, window(nullptr)
 		, renderer(nullptr)
 		, texture(nullptr)
+		, linesPerThread(0)
 		, bRunning(true)
 	{
 		if (width <= 0 || height <= 0)
@@ -62,7 +62,7 @@ namespace multidemo
 		threads.resize(numThreads);
 		std::cout << "Renderer spawned with " << numThreads << " threads\n";
 
-		std::cout << "Renderer spawned with " << numThreads + 1 << " threads\n";
+		linesPerThread = height / static_cast<int>(threads.size());
 	}
 
 	Renderer::~Renderer()
@@ -80,7 +80,6 @@ namespace multidemo
 			frameStartTime = std::chrono::high_resolution_clock::now();
 			
 			handleInputs();
-
 			update();
 			render();
 			printStatistics();
@@ -130,11 +129,12 @@ namespace multidemo
 		renderTexture();
 	}
 
-	void Renderer::updateTexture(Uint32* pixels, const int startLine, const int endLine, const Pixel& pixel)
+	void Renderer::updateTexture(Uint32* pixels, const int startLine, const int numLinesToDraw, const Pixel& pixel)
 	{
 		if (!pixels)
 			return;
 
+		const int endLine = startLine + numLinesToDraw;
 		for (int y = startLine; y < endLine; ++y)
 		{
 			Uint32* row = (Uint32*)((Uint8*)pixels + y * pitch);
