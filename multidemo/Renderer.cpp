@@ -17,6 +17,11 @@ namespace multidemo
 	Renderer::Renderer(const int inWidth, const int inHeight)
 		: width(inWidth)
 		, height(inHeight)
+		, pitch(0)
+		, window(nullptr)
+		, renderer(nullptr)
+		, texture(nullptr)
+		, bRunning(true)
 	{
 		SDL_Init(SDL_INIT_VIDEO);
 

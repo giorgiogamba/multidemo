@@ -41,10 +41,9 @@ namespace multidemo
 		void printStatistics();
 
 		int width;
-
 		int height;
 
-		int pitch = 0;
+		int pitch;
 
 		SDL_Window* window;
 		SDL_Renderer* renderer;
@@ -55,5 +54,6 @@ namespace multidemo
 		/** Time when the frame started to be drawn */
 		std::chrono::high_resolution_clock::time_point frameStartTime;
 
+		bool bRunning;
 	};
 }
