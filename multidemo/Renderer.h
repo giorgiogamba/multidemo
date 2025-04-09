@@ -24,7 +24,7 @@ namespace multidemo
 		void update();
 		void render();
 
-		void updateTexture(Uint32* pixels, const int startLine, const int endLine, const int colorValue);
+		void updateTexture(Uint32* pixels, const int startLine, const int endLine, const int red, const int green, const int blue);
 
 	private:
 

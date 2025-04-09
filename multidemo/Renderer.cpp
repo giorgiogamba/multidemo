@@ -76,7 +76,30 @@ namespace multidemo
 		if (!pixels)
 			return;
 
-		updateTexture(pixels, 0, height, 0);
+		int startingLine = 0;
+		const int linesPerThread = height / static_cast<int>(threads.size() + 1);
+
+		constexpr int threadColorValue = 10;
+		for (int i = 0; i < threads.size(); ++i)
+		{
+			const int endLine = startingLine + linesPerThread;
+			const int currentThreadColorValue = i * threadColorValue;
+			threads[i] = std::thread(&Renderer::updateTexture, this, pixels, startingLine, endLine, currentThreadColorValue, currentThreadColorValue, currentThreadColorValue);
+
+			startingLine = endLine;
+		}
+
+		// make the main thread draw all the remainig lines (considers also reminders from previous threads)
+		updateTexture(pixels, startingLine, height, 255, 255, 255);
+
+		// makes the main thread wait for each worker
+		for (int i = 0; i < threads.size(); ++i)
+		{
+			if (threads[i].joinable())
+			{
+				threads[i].join();
+			}
+		}
 
 		releaseTexture();
 	}
@@ -87,7 +110,7 @@ namespace multidemo
 		renderTexture();
 	}
 
-	void Renderer::updateTexture(Uint32* pixels, const int startLine, const int endLine, const int colorValue)
+	void Renderer::updateTexture(Uint32* pixels, const int startLine, const int endLine, const int red, const int green, const int blue)
 	{
 		if (!pixels)
 			return;
@@ -98,7 +121,7 @@ namespace multidemo
 
 			for (int x = 0; x < width; ++x)
 			{	
-				row[x] = buildColorCode(x, y);
+				row[x] = buildColorCode(x, y, red, green, blue);
 			}
 		}
 	}
