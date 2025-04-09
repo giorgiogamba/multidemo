@@ -37,6 +37,9 @@ namespace multidemo
 		void cleanScreen();
 
 		void renderTexture();
+		
+		/** Prints information about the time requested to draw a frame and FPS */
+		void printStatistics();
 
 		int width;
 
