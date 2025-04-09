@@ -9,20 +9,34 @@
 #include "SDL3/SDL_init.h"
 #include "SDL3/SDL_render.h"
 #include "SDL3/SDL_timer.h"
+#include "Pixel.h"
 
 namespace multidemo
 {
-
 	Renderer::Renderer(const int inWidth, const int inHeight)
 		: width(inWidth)
 		, height(inHeight)
+		, pitch(0)
+		, window(nullptr)
+		, renderer(nullptr)
+		, texture(nullptr)
+		, linesPerThread(0)
+		, bRunning(true)
 	{
-		SDL_Init(SDL_INIT_VIDEO);
+		if (width <= 0 || height <= 0)
+		{
+			throw std::invalid_argument("The provided window sizes must be both positive integers");
+		}
 
-		window = SDL_CreateWindow("TEST", width, height, 0);
+		if (!SDL_Init(SDL_INIT_VIDEO))
+		{
+			throw std::exception("Error while initializing SDL");
+		}
+
+		window = SDL_CreateWindow(windowTitle.c_str(), width, height, 0);
 		if (!window)
 		{
-			return;
+			throw std::exception("error while creating window");
 		}
 
 		SDL_SetWindowResizable(window, true);
@@ -30,20 +44,25 @@ namespace multidemo
 		renderer = SDL_CreateRenderer(window, nullptr);
 		if (!renderer)
 		{
-			return;
+			throw std::exception("error while creating SDL inner renderer");
 		}
 
 		texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, width, height);
 		if (!texture)
 		{
-			return;
+			throw std::exception("error while creating texture");
 		}
 
-		// We don't make the main thread draw
-		const int numThreads = std::thread::hardware_concurrency() - 1;
-		threads.resize(numThreads);
+		const int numThreads = std::thread::hardware_concurrency();
+		if (numThreads <= 0)
+		{
+			throw std::exception("Error instantiating threads. They are 0");
+		}
 
-		std::cout << "Renderer spawned with " << numThreads + 1 << " threads\n";
+		threads.resize(numThreads);
+		std::cout << "Renderer spawned with " << numThreads << " threads\n";
+
+		linesPerThread = height / static_cast<int>(threads.size());
 	}
 
 	Renderer::~Renderer()
@@ -55,20 +74,12 @@ namespace multidemo
 
 	void Renderer::run()
 	{
-		bool bRunning = true;
 		while (bRunning)
 		{
 			// start timer
 			frameStartTime = std::chrono::high_resolution_clock::now();
 			
-			SDL_Event event;
-			while (SDL_PollEvent(&event)) {
-				if (event.type == SDL_EVENT_QUIT) {
-					bRunning = false;
-					break;
-				}
-			}
-
+			handleInputs();
 			update();
 			render();
 			printStatistics();
@@ -88,14 +99,17 @@ namespace multidemo
 		for (int i = 0; i < threads.size(); ++i)
 		{
 			const int endLine = startingLine + linesPerThread;
+			
 			const int currentThreadColorValue = i * threadColorValue;
-			threads[i] = std::thread(&Renderer::updateTexture, this, pixels, startingLine, endLine, currentThreadColorValue, currentThreadColorValue, currentThreadColorValue);
+			Pixel pixel(currentThreadColorValue, currentThreadColorValue, currentThreadColorValue);
+			threads[i] = std::thread(&Renderer::updateTexture, this, pixels, startingLine, endLine, pixel);
 
 			startingLine = endLine;
 		}
 
 		// make the main thread draw all the remaining lines (considers also reminders from previous threads)
-		updateTexture(pixels, startingLine, height, 255, 255, 255);
+		Pixel mainThreadPixel(threadColorValue, threadColorValue, threadColorValue);
+		updateTexture(pixels, startingLine, height, mainThreadPixel);
 
 		// makes the main thread wait for each worker
 		for (int i = 0; i < threads.size(); ++i)
@@ -115,19 +129,36 @@ namespace multidemo
 		renderTexture();
 	}
 
-	void Renderer::updateTexture(Uint32* pixels, const int startLine, const int endLine, const int red, const int green, const int blue)
+	void Renderer::updateTexture(Uint32* pixels, const int startLine, const int numLinesToDraw, const Pixel& pixel)
 	{
 		if (!pixels)
 			return;
 
+		const int endLine = startLine + numLinesToDraw;
 		for (int y = startLine; y < endLine; ++y)
 		{
 			Uint32* row = (Uint32*)((Uint8*)pixels + y * pitch);
 
 			for (int x = 0; x < width; ++x)
 			{	
-				row[x] = buildColorCode(x, y, red, green, blue);
+				row[x] = pixel.getColor();
 			}
+		}
+	}
+
+	void Renderer::handleInputs()
+	{
+		SDL_Event event;
+
+		while (SDL_PollEvent(&event)) {
+
+			switch (event.type)
+			{
+			case SDL_EVENT_QUIT:
+				bRunning = false;
+				break;
+			}
+
 		}
 	}
 
@@ -150,20 +181,6 @@ namespace multidemo
 	{
 		// Unlocks texture after writing
 		SDL_UnlockTexture(texture);
-	}
-
-	Uint32 Renderer::buildColorCode(const int x, const int y, const int red, const int green, const int blue)
-	{
-		constexpr int maxColorValue = 255;
-
-		const Uint8 r = (Uint8)(x * red / width);
-		const Uint8 g = (Uint8)(y * green / height);
-		const Uint8 b = blue;
-		const Uint8 a = maxColorValue;
-
-		Uint32 color = (a << 24) | (r << 16) | (g << 8) | b;
-		
-		return color;
 	}
 
 	void Renderer::cleanScreen()
