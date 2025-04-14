@@ -139,6 +139,7 @@
   <ItemGroup>
     <ClInclude Include="Pixel.h" />
     <ClInclude Include="Renderer.h" />
+    <ClInclude Include="Task.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
