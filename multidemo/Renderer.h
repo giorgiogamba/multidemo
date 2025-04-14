@@ -53,7 +53,7 @@ namespace multidemo
 		void renderTexture();
 		
 		/** Prints information about the time requested to draw a frame and FPS */
-		void printStatistics();
+		void printStatistics() const;
 
 		int width;
 		int height;

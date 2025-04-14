@@ -206,7 +206,7 @@ namespace multidemo
 		SDL_RenderPresent(renderer);
 	}
 
-	void Renderer::printStatistics()
+	void Renderer::printStatistics() const
 	{
 		const std::chrono::high_resolution_clock::time_point frameEndTime = std::chrono::high_resolution_clock::now();
 
