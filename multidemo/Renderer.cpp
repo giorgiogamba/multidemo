@@ -68,6 +68,11 @@ namespace multidemo
 		threads.resize(numThreads);
 		std::cout << "Renderer spawned with " << numThreads << " threads\n";
 
+		for (int threadIdx = 0; threadIdx < numThreads; ++threadIdx)
+		{
+			threads[threadIdx] = std::thread(&Renderer::threadLifecycle, this);
+		}
+
 		linesPerThread = height / static_cast<int>(threads.size());
 
 		textureRawData = nullptr;
@@ -234,6 +239,24 @@ namespace multidemo
 
 		return RenderTask();
 	}
+
+	void Renderer::threadLifecycle()
+	{
+		std::unique_lock<std::mutex> queueLock(tasksLock);
+
+		while (true)
+		{
+			// Waits until there is a job inside the queue
+			taskAvailable.wait(queueLock, [&]{ return !tasks.empty(); });
+
+			const RenderTask task = getTask();
+			taskAvailable.notify_one();
+
+			// Executes the job
+			updateTexture(task);
+		}
+	}
+
 	void Renderer::completeThreads()
 	{
 		for (std::thread& t : threads)
