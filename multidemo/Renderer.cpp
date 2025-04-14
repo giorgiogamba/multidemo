@@ -42,7 +42,7 @@ namespace multidemo
 		window = SDL_CreateWindow(windowTitle.c_str(), width, height, 0);
 		if (!window)
 		{
-			throw std::exception("error while creating window");
+			throw std::exception("Error while creating window");
 		}
 
 		SDL_SetWindowResizable(window, true);
@@ -50,13 +50,13 @@ namespace multidemo
 		renderer = SDL_CreateRenderer(window, nullptr);
 		if (!renderer)
 		{
-			throw std::exception("error while creating SDL inner renderer");
+			throw std::exception("Error while creating SDL inner renderer");
 		}
 
 		texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, width, height);
 		if (!texture)
 		{
-			throw std::exception("error while creating texture");
+			throw std::exception("Error while creating texture");
 		}
 
 		const int numThreads = std::thread::hardware_concurrency();
