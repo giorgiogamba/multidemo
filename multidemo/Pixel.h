@@ -10,6 +10,12 @@ struct Pixel
 
 public:
 
+	Pixel()
+		: r(0)
+		, g(0)
+		, b(0)
+	{}
+
 	Pixel(const int inR, const int inG, const int inB)
 		: r(inR)
 		, g(inG)
