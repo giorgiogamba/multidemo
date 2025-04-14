@@ -59,6 +59,9 @@ namespace multidemo
 
 		void addTask(const int startLine, const int endLine, const int r, const int g, const int b);
 		RenderTask getTask();
+
+		void completeThreads();
+
 		int width;
 		int height;
 
