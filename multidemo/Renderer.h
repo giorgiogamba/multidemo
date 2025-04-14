@@ -40,7 +40,7 @@ namespace multidemo
 		void update();
 		void render();
 
-		void updateTexture(Uint32* pixels, const int startLine, const int endLine, const Pixel& pixel);
+		void updateTexture(const RenderTask& task);
 
 		void handleInputs();
 

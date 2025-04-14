@@ -137,18 +137,18 @@ namespace multidemo
 		renderTexture();
 	}
 
-	void Renderer::updateTexture(Uint32* pixels, const int startLine, const int endLine, const Pixel& pixel)
+	void Renderer::updateTexture(const RenderTask& task)
 	{
-		if (!pixels)
+		if (!textureRawData)
 			return;
 
-		for (int y = startLine; y < endLine; ++y)
+		for (int y = task.startLine; y < task.endLine; ++y)
 		{
-			Uint32* row = (Uint32*)((Uint8*)pixels + y * pitch);
+			Uint32* row = (Uint32*)((Uint8*)textureRawData + y * pitch);
 
 			for (int x = 0; x < width; ++x)
-			{	
-				row[x] = pixel.getColor();
+			{
+				row[x] = task.getPixelColor();
 			}
 		}
 	}
