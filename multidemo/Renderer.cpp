@@ -69,6 +69,8 @@ namespace multidemo
 		std::cout << "Renderer spawned with " << numThreads << " threads\n";
 
 		linesPerThread = height / static_cast<int>(threads.size());
+
+		textureRawData = nullptr;
 	}
 
 	Renderer::~Renderer()
@@ -166,19 +168,18 @@ namespace multidemo
 		}
 	}
 
-	Uint32* Renderer::getTextureRawData()
+	void Renderer::getTextureRawData()
 	{
 		// Use pointer to void because we don't know the memory typology
 		void* rawPixels = nullptr;
 
-		// Locks texture in order to obtain access to pixels/
-		// The pitch is the number of bytes per pixel
+		// Locks texture in order to obtain access to pixels. The pitch is the number of bytes per pixel
 		if (!SDL_LockTexture(texture, nullptr, &rawPixels, &pitch))
 		{
-			return nullptr;
+			return;
 		}
 
-		return static_cast<Uint32*>(rawPixels); // Cast to 32bit type because it assumes ARGB888 format
+		textureRawData = static_cast<Uint32*>(rawPixels); // Cast to 32bit type because it assumes ARGB888 format
 	}
 
 	void Renderer::releaseTexture()

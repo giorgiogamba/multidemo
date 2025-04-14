@@ -44,7 +44,7 @@ namespace multidemo
 
 		void handleInputs();
 
-		Uint32* getTextureRawData();
+		void getTextureRawData();
 
 		void releaseTexture();
 
@@ -71,5 +71,7 @@ namespace multidemo
 		std::chrono::high_resolution_clock::time_point frameStartTime;
 
 		bool bRunning;
+
+		Uint32* textureRawData;
 	};
 }
