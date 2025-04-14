@@ -100,24 +100,6 @@ namespace multidemo
 		if (!pixels)
 			return;
 
-		int startingLine = 0;
-		const int linesPerThread = height / static_cast<int>(threads.size() + 1);
-
-		constexpr int threadColorValue = 10;
-		for (int i = 0; i < threads.size(); ++i)
-		{
-			const int endLine = startingLine + linesPerThread;
-			
-			const int currentThreadColorValue = i * threadColorValue;
-			Pixel pixel(currentThreadColorValue, currentThreadColorValue, currentThreadColorValue);
-			threads[i] = std::thread(&Renderer::updateTexture, this, pixels, startingLine, endLine, pixel);
-
-			startingLine = endLine;
-		}
-
-		// make the main thread draw all the remaining lines (considers also reminders from previous threads)
-		Pixel mainThreadPixel(threadColorValue, threadColorValue, threadColorValue);
-		updateTexture(pixels, startingLine, height, mainThreadPixel);
 
 		releaseTexture();
 	}
@@ -213,6 +195,22 @@ namespace multidemo
 		std::cout << "Frame drawn in " << frameTime.count() << " milliseconds. FPS: " << framesPerSecond << "\n";
 	}
 
+	void Renderer::createRenderTasks()
+	{
+		int startingLine = 0;
+		const int linesPerThread = height / static_cast<int>(threads.size() + 1);
+
+		constexpr int threadColorValue = 10;
+		for (int i = 0; i < threads.size(); ++i)
+		{
+			const int endLine = startingLine + linesPerThread;
+			const int currentThreadColorValue = i * threadColorValue;
+
+			addTask(startingLine, endLine, currentThreadColorValue, currentThreadColorValue, currentThreadColorValue);
+
+			startingLine = endLine;
+		}
+	}
 	void Renderer::completeThreads()
 	{
 		for (std::thread& t : threads)

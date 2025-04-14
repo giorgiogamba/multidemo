@@ -55,6 +55,7 @@ namespace multidemo
 		/** Prints information about the time requested to draw a frame and FPS */
 		void printStatistics() const;
 
+		void createRenderTasks();
 		int width;
 		int height;
 
