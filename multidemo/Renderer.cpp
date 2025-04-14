@@ -155,15 +155,14 @@ namespace multidemo
 	{
 		SDL_Event event;
 
-		while (SDL_PollEvent(&event)) {
-
+		while (SDL_PollEvent(&event))
+		{
 			switch (event.type)
 			{
 			case SDL_EVENT_QUIT:
 				bRunning = false;
 				break;
 			}
-
 		}
 	}
 
