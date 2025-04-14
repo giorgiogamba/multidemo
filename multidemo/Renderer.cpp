@@ -119,15 +119,6 @@ namespace multidemo
 		Pixel mainThreadPixel(threadColorValue, threadColorValue, threadColorValue);
 		updateTexture(pixels, startingLine, height, mainThreadPixel);
 
-		// makes the main thread wait for each worker
-		for (int i = 0; i < threads.size(); ++i)
-		{
-			if (threads[i].joinable())
-			{
-				threads[i].join();
-			}
-		}
-
 		releaseTexture();
 	}
 
@@ -220,5 +211,16 @@ namespace multidemo
 		const double framesPerSecond = secondInMilli.count() / frameTime.count();
 
 		std::cout << "Frame drawn in " << frameTime.count() << " milliseconds. FPS: " << framesPerSecond << "\n";
+	}
+
+	void Renderer::completeThreads()
+	{
+		for (std::thread& t : threads)
+		{
+			if (t.joinable())
+			{
+				t.detach();
+			}
+		}
 	}
 }
