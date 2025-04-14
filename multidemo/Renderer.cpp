@@ -76,6 +76,7 @@ namespace multidemo
 		linesPerThread = height / static_cast<int>(threads.size());
 
 		textureRawData = nullptr;
+		deltaTime = 0.0;
 	}
 
 	Renderer::~Renderer()
@@ -182,12 +183,14 @@ namespace multidemo
 		SDL_RenderPresent(renderer);
 	}
 
-	void Renderer::printStatistics() const
+	void Renderer::printStatistics()
 	{
 		const std::chrono::high_resolution_clock::time_point frameEndTime = std::chrono::high_resolution_clock::now();
 
 		// Compute the time requested to draw the current frame
 		const std::chrono::duration<double, std::milli> frameTime = frameEndTime - frameStartTime;
+
+		deltaTime = frameTime.count();
 
 		// Compute fps
 		constexpr std::chrono::seconds oneSecond(1);

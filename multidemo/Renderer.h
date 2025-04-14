@@ -53,7 +53,7 @@ namespace multidemo
 		void renderTexture();
 		
 		/** Prints information about the time requested to draw a frame and FPS */
-		void printStatistics() const;
+		void printStatistics();
 
 		void createRenderTasks();
 
@@ -89,5 +89,7 @@ namespace multidemo
 		std::condition_variable taskAvailable;
 
 		Uint32* textureRawData;
+
+		double deltaTime;
 	};
 }
