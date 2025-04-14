@@ -56,6 +56,9 @@ namespace multidemo
 		void printStatistics() const;
 
 		void createRenderTasks();
+
+		void addTask(const int startLine, const int endLine, const int r, const int g, const int b);
+		RenderTask getTask();
 		int width;
 		int height;
 

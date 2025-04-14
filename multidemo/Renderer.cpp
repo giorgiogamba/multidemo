@@ -207,6 +207,33 @@ namespace multidemo
 			startingLine = endLine;
 		}
 	}
+
+	void Renderer::addTask(const int startLine, const int endLine, const int r, const int g, const int b)
+	{
+		std::unique_lock<std::mutex> queueLock(tasksLock);
+
+		RenderTask newTask;
+		newTask.startLine = startLine;
+		newTask.endLine = endLine;
+		newTask.pixel = Pixel(r, g, b);
+		
+		tasks.push(newTask);
+
+		taskAvailable.notify_one();
+	}
+
+	RenderTask Renderer::getTask()
+	{
+		if (!tasks.empty())
+		{
+			const RenderTask& task = tasks.front();
+			tasks.pop();
+
+			return task;
+		}
+
+		return RenderTask();
+	}
 	void Renderer::completeThreads()
 	{
 		for (std::thread& t : threads)
