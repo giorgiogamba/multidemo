@@ -1,5 +1,7 @@
 // Copyright 2025 Giorgio Gamba
 
+#pragma region Includes
+
 #include "Renderer.h"
 
 #include <iostream>
@@ -9,7 +11,11 @@
 #include "SDL3/SDL_init.h"
 #include "SDL3/SDL_render.h"
 #include "SDL3/SDL_timer.h"
+
 #include "Pixel.h"
+#include "Task.h"
+
+#pragma endregion
 
 namespace multidemo
 {
