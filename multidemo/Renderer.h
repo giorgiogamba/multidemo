@@ -76,6 +76,13 @@ namespace multidemo
 
 		bool bRunning;
 
+		std::queue<RenderTask> tasks;
+
+		// Permits threads to lock queue when they are looking for a task
+		std::mutex tasksLock;
+
+		std::condition_variable taskAvailable;
+
 		Uint32* textureRawData;
 	};
 }
