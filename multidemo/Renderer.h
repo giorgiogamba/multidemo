@@ -1,15 +1,26 @@
 // Copyright 2025 Giorgio Gamba
 
+#pragma region Includes
+
 #include <vector>
 #include <thread>
 #include <mutex>
+#include <queue>
 
 #include "SDL3/SDL_stdinc.h"
+
+#include "Task.h"
+
+#pragma endregion
+
+#pragma region Forward Declarations
 
 struct SDL_Window;
 struct SDL_Renderer;
 struct SDL_Texture;
 struct Pixel;
+
+#pragma endregion
 
 namespace multidemo
 {
@@ -42,7 +53,7 @@ namespace multidemo
 		void renderTexture();
 		
 		/** Prints information about the time requested to draw a frame and FPS */
-		void printStatistics();
+		void printStatistics() const;
 
 		int width;
 		int height;

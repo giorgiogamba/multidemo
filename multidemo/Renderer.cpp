@@ -1,5 +1,7 @@
 // Copyright 2025 Giorgio Gamba
 
+#pragma region Includes
+
 #include "Renderer.h"
 
 #include <iostream>
@@ -9,7 +11,11 @@
 #include "SDL3/SDL_init.h"
 #include "SDL3/SDL_render.h"
 #include "SDL3/SDL_timer.h"
+
 #include "Pixel.h"
+#include "Task.h"
+
+#pragma endregion
 
 namespace multidemo
 {
@@ -36,7 +42,7 @@ namespace multidemo
 		window = SDL_CreateWindow(windowTitle.c_str(), width, height, 0);
 		if (!window)
 		{
-			throw std::exception("error while creating window");
+			throw std::exception("Error while creating window");
 		}
 
 		SDL_SetWindowResizable(window, true);
@@ -44,13 +50,13 @@ namespace multidemo
 		renderer = SDL_CreateRenderer(window, nullptr);
 		if (!renderer)
 		{
-			throw std::exception("error while creating SDL inner renderer");
+			throw std::exception("Error while creating SDL inner renderer");
 		}
 
 		texture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_ARGB8888, SDL_TEXTUREACCESS_STREAMING, width, height);
 		if (!texture)
 		{
-			throw std::exception("error while creating texture");
+			throw std::exception("Error while creating texture");
 		}
 
 		const int numThreads = std::thread::hardware_concurrency();
@@ -149,15 +155,14 @@ namespace multidemo
 	{
 		SDL_Event event;
 
-		while (SDL_PollEvent(&event)) {
-
+		while (SDL_PollEvent(&event))
+		{
 			switch (event.type)
 			{
 			case SDL_EVENT_QUIT:
 				bRunning = false;
 				break;
 			}
-
 		}
 	}
 
@@ -200,7 +205,7 @@ namespace multidemo
 		SDL_RenderPresent(renderer);
 	}
 
-	void Renderer::printStatistics()
+	void Renderer::printStatistics() const
 	{
 		const std::chrono::high_resolution_clock::time_point frameEndTime = std::chrono::high_resolution_clock::now();
 
