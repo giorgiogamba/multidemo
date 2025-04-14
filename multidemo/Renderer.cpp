@@ -101,7 +101,9 @@ namespace multidemo
 
 	void Renderer::update()
 	{
-
+		getTextureRawData();
+		createRenderTasks();
+		completeThreads();
 		releaseTexture();
 	}
 
