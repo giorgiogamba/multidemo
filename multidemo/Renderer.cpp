@@ -129,12 +129,11 @@ namespace multidemo
 		renderTexture();
 	}
 
-	void Renderer::updateTexture(Uint32* pixels, const int startLine, const int numLinesToDraw, const Pixel& pixel)
+	void Renderer::updateTexture(Uint32* pixels, const int startLine, const int endLine, const Pixel& pixel)
 	{
 		if (!pixels)
 			return;
 
-		const int endLine = startLine + numLinesToDraw;
 		for (int y = startLine; y < endLine; ++y)
 		{
 			Uint32* row = (Uint32*)((Uint8*)pixels + y * pitch);
