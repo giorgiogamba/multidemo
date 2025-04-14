@@ -96,10 +96,6 @@ namespace multidemo
 
 	void Renderer::update()
 	{
-		Uint32* pixels = getTextureRawData();
-		if (!pixels)
-			return;
-
 
 		releaseTexture();
 	}
